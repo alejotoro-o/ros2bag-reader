@@ -1,0 +1,9 @@
+LICENSE
+README.md
+pyproject.toml
+rosbag2_reader/__init__.py
+rosbag2_reader/rosbag2_reader.py
+rosbag2_reader.egg-info/PKG-INFO
+rosbag2_reader.egg-info/SOURCES.txt
+rosbag2_reader.egg-info/dependency_links.txt
+rosbag2_reader.egg-info/top_level.txt

@@ -1,0 +1,5 @@
+__pycache__
+.pypirc
+.venv
+dist
+ros2bag-reader.egg-info

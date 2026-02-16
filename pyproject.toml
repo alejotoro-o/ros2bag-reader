@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=82.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ros2bag-reader"
+version = "0.0.1"
+authors = [
+    { name="Alejandro Toro-Ossaba", email="alejotoro.o@gmail.com" },
+]
+description = "A compact python library to read ROS2 rosbag files."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+keywords = ["reinforcement learning", "machine learning"]
+license = "MIT"
+license-files = ["LICENSE*"]
+dependencies = [
+    "numpy>=1.24.0",
+    "rosidl-runtime-py>=0.9.3",
+    "rclpy>=3.3.16",
+    "PyYAML>=6.0.3",
+    "setuptools>=82.0.0",
+    "typeguard>=4.5.0",
+    "jinja>=3.1.6",
+]
+[project.optional-dependencies]
+
+[project.urls]
+"Homepage" = "https://github.com/alejotoro-o/ros2bag-reader"
+"Documentation" = "https://github.com/alejotoro-o/ros2bag-reader"
+"Repository" = "https://github.com/alejotoro-o/ros2bag-reader"
+"Bug Tracker" = "https://github.com/alejotoro-o/ros2bag-reader/issues"

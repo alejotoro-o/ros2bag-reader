@@ -1,0 +1,20 @@
+Metadata-Version: 2.4
+Name: ros2bag-reader
+Version: 0.0.1
+Summary: A compact python library to read ROS2 rosbag files.
+Author-email: Alejandro Toro-Ossaba <alejotoro.o@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/alejotoro-o/rosbag2-reader
+Project-URL: Documentation, https://github.com/alejotoro-o/rosbag2-reader
+Project-URL: Repository, https://github.com/alejotoro-o/rosbag2-reader
+Project-URL: Bug Tracker, https://github.com/alejotoro-o/rosbag2-reader/issues
+Keywords: reinforcement learning,machine learning
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.24.0
+Dynamic: license-file
+
+# ROSBag Reader
