@@ -1,5 +1,10 @@
 # ROS2Bag Reader
 
+![PyPI - License](https://img.shields.io/pypi/l/ros2bag-reader)
+![PyPI - Version](https://img.shields.io/pypi/v/ros2bag-reader)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ros2bag-reader)
+![PyPI Downloads](https://pepy.tech/badge/ros2bag-reader)
+
 A lightweight Python utility for reading **ROS 2 (rosbag2)** recordings stored with the default `sqlite3` backend.
 
 `ROS2BagReader` provides:
