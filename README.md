@@ -43,7 +43,13 @@ It is designed for **data analysis, plotting, and post-processing workflows**, e
 
 Python **3.10 or greater** is required.
 
-You can copy the module into your project or install it as a local package.
+You can intall the module with pip using.
+
+```
+pip install ros2bag_reader
+```
+
+Or you can copy the module into your project or install it as a local package.
 
 ### Dependencies
 
