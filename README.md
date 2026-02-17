@@ -46,7 +46,7 @@ Python **3.10 or greater** is required.
 You can intall the module with pip using.
 
 ```
-pip install ros2bag_reader
+pip install ros2bag-reader
 ```
 
 Or you can copy the module into your project or install it as a local package.
