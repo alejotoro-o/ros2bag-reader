@@ -2,4 +2,4 @@ __pycache__
 .pypirc
 .venv
 dist
-ros2bag-reader.egg-info
+ros2bag_reader.egg-info
