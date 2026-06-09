@@ -1,7 +1,10 @@
 import os
 import re
+import sys
 import sqlite3
+import ctypes
 import yaml
+from typing import Optional
 from rosidl_runtime_py.utilities import get_message
 from rclpy.serialization import deserialize_message
 import numpy as np
@@ -27,6 +30,21 @@ class ROS2BagReader:
     bag_folder : str
         Path to the ROS 2 bag directory containing `metadata.yaml`
         and one or more `.db3` database files.
+    workspace : str, optional
+        Path to a ROS 2 workspace ``install`` directory (or its parent).
+        When provided, all ``.so`` libraries found under it are preloaded
+        via ``ctypes.CDLL``. This enables deserialization of **custom**
+        ROS message types (e.g., ``interfaces/msg/Force``) that are not
+        part of a standard ROS 2 installation, without requiring the
+        environment to be sourced beforehand.
+
+        Example::
+
+            reader = ROS2BagReader("recording",
+                                   workspace="/path/to/ws/install")
+
+        If unset, the reader assumes all required message packages are
+        already discoverable via ``LD_LIBRARY_PATH`` or system paths.
 
     Raises
     ------
@@ -34,7 +52,7 @@ class ROS2BagReader:
         If `metadata.yaml` is not found in the provided folder.
     """
 
-    def __init__(self, bag_folder: str):
+    def __init__(self, bag_folder: str, workspace: Optional[str] = None):
         """
         Initialize the ROS2BagReader.
 
@@ -42,10 +60,17 @@ class ROS2BagReader:
         in `metadata.yaml`, and builds internal mappings between topic names,
         topic IDs, and ROS message types.
 
+        If a `workspace` path is supplied, custom message type libraries
+        (``.so`` files) are preloaded to support deserialization of
+        locally-built message packages.
+
         Parameters
         ----------
         bag_folder : str
             Path to the ROS 2 bag directory.
+        workspace : str, optional
+            Path to a ROS 2 workspace install directory for custom
+            message type support.
 
         Raises
         ------
@@ -59,6 +84,16 @@ class ROS2BagReader:
 
         if not os.path.exists(self.metadata_path):
             raise FileNotFoundError("metadata.yaml not found in bag folder")
+
+        # Preload custom interface .so libraries if a workspace is given.
+        # This must happen before any rosidl/rclpy imports that try to
+        # dlopen the shared libraries at module-load time.
+        if workspace is not None:
+            if not os.path.isdir(workspace):
+                # Maybe the user passed the workspace root, not install/
+                workspace = os.path.join(workspace, "install")
+            if os.path.isdir(workspace):
+                self._load_custom_interfaces(workspace)
 
         # Parse metadata
         with open(self.metadata_path, "r") as f:
@@ -85,6 +120,45 @@ class ROS2BagReader:
             name: get_message(type_)
             for _, name, type_ in topics_data
         }
+
+    @staticmethod
+    def _load_custom_interfaces(install_dir: str):
+        """
+        Prepare the Python and library paths for custom ROS 2 message
+        packages found under an ``install`` tree.
+
+        ROS 2 custom message packages (e.g. ``interfaces``) ship both:
+        - Python modules in ``local/lib/python3.X/dist-packages/``
+        - Typesupport ``.so`` files in ``lib/`` and ``local/.../``
+
+        The Python paths are added to ``sys.path`` so that
+        ``rosidl_runtime_py`` can import the message classes.  The
+        ``.so`` files are preloaded via ``ctypes.CDLL`` so that
+        subsequent ``dlopen`` calls (triggered by message
+        deserialization) can find them without ``LD_LIBRARY_PATH``
+        being set.
+
+        Parameters
+        ----------
+        install_dir : str
+            Path to a ROS 2 workspace ``install`` directory.
+        """
+        # 1. Add Python package paths for custom msg modules
+        for root, dirs, _ in os.walk(install_dir):
+            for d in dirs:
+                pkg_path = os.path.join(root, d)
+                if 'packages' in pkg_path or 'dist-packages' in pkg_path:
+                    if pkg_path not in sys.path:
+                        sys.path.insert(0, pkg_path)
+
+        # 2. Preload .so libraries so dlopen can find them in-process
+        for root, _, files in os.walk(install_dir):
+            for f in files:
+                if f.endswith(".so"):
+                    try:
+                        ctypes.CDLL(os.path.join(root, f))
+                    except Exception:
+                        pass
 
     def close(self):
         """
