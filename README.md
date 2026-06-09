@@ -103,13 +103,14 @@ see the Jupyter notebook in the `examples/` folder.
 
 ## Class Reference
 
-### `ROS2BagReader(bag_folder: str)`
+### `ROS2BagReader(bag_folder: str, workspace: str)`
 
 Initialize the reader from a ROS 2 bag folder.
 
 **Parameters**
 
 * `bag_folder` — Path to the directory containing `metadata.yaml`
+* `workspace`— Path to a ROS 2 workspace ``install`` directory (or its parent). When provided, all ``.so`` libraries found under it are preloaded via ``ctypes.CDLL``. This enables deserialization of **custom** ROS message types (e.g., ``interfaces/msg/Force``) that are not part of a standard ROS 2 installation, without requiring the environment to be sourced beforehand.
 
 ---
 
